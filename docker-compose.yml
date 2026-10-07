@@ -1,0 +1,25 @@
+services:
+  receptionist:
+    build: .
+    env_file: .env
+    environment:
+      ENVIRONMENT: production
+      STT_ENABLED: "true"
+    ports:
+      # Bind to localhost only; put an HTTPS reverse proxy (Caddy/Nginx) in front.
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - data:/app/data
+      - models:/app/models
+      # Staff edit skills on the host; reload them from the admin page.
+      - ./skills:/app/skills:ro
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+
+volumes:
+  data:
+  models:

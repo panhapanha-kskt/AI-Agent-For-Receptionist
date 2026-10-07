@@ -1,0 +1,11 @@
+# EXAMPLE DATA - replace with real fees. Amounts in USD per year.
+currency: USD
+registration_fee: 150
+tuition_per_year:
+  kindergarten: 1800
+  grade_1_to_6: 2400
+  grade_7_to_9: 2900
+  grade_10_to_12: 3300
+other:
+  uniform_set: 60
+  school_bus_per_year: 600
