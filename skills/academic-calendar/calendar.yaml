@@ -1,0 +1,23 @@
+# TODO: replace with real dates. Use YYYY-MM-DD.
+academic_year: "TODO: e.g. 2026-2027"
+
+semesters:
+  - name: "Semester 1"
+    classes_start: "TODO"
+    midterm_exams: "TODO"
+    final_exams: "TODO"
+    ends: "TODO"
+  - name: "Semester 2"
+    classes_start: "TODO"
+    midterm_exams: "TODO"
+    final_exams: "TODO"
+    ends: "TODO"
+
+holidays:
+  # Public holidays when the school is closed. Copy a line per holiday.
+  - { date: "TODO", name: "TODO: e.g. Khmer New Year", name_km: "TODO: e.g. ចូលឆ្នាំខ្មែរ" }
+
+events:
+  - { date: "TODO", name: "TODO: e.g. Orientation day for new students" }
+  - { date: "TODO", name: "TODO: e.g. Open day / campus tour" }
+  - { date: "TODO", name: "TODO: e.g. Graduation ceremony" }

@@ -1,6 +1,6 @@
 ---
 name: campus-and-contact
-description: School address and directions, opening hours, class times, holidays, and which office or staff member to contact for what.
+description: School address, directions, map, front-office opening hours, phone numbers and which office or staff member to contact for what. អាសយដ្ឋាន ទីតាំង លេខទូរស័ព្ទ ការិយាល័យ.
 ---
 
 # Campus and contact
@@ -10,7 +10,7 @@ description: School address and directions, opening hours, class times, holidays
 ## Location and hours
 - Address: No. 123, Street 456, Phnom Penh, Cambodia.
 - Front office hours: Monday-Friday 7:30-17:00, Saturday 8:00-12:00.
-- Classes: 7:30-11:30 and 13:30-16:30, Monday-Friday.
+- Class times are in the class-schedule skill; holidays are in the academic-calendar skill.
 
 ## Offices
 | Office | For | Phone |

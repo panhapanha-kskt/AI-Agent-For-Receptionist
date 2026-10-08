@@ -1,0 +1,17 @@
+# TODO: replace with your real programs. Copy the block below once per program.
+# Keep the indentation with spaces (never tabs).
+programs:
+  - name: "TODO: program name (e.g. Bachelor of Computer Science)"
+    name_km: "TODO: Khmer name"
+    level: "TODO: bachelor / associate / short course / certificate"
+    duration: "TODO: e.g. 4 years"
+    language_of_instruction: "TODO: English / Khmer"
+    schedule: "TODO: e.g. weekday mornings, or evening 17:30-20:30"
+    entry_requirements:
+      - "TODO: e.g. high school diploma (grade 12 certificate)"
+      - "TODO: e.g. placement test in Math and English"
+    main_subjects:
+      - "TODO"
+    career_paths:
+      - "TODO: e.g. software developer, network engineer"
+    intake: "TODO: e.g. October each year"

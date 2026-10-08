@@ -1,0 +1,12 @@
+# TODO: replace with real scholarships. Copy the block per scholarship.
+scholarships:
+  - name: "TODO: e.g. Merit scholarship"
+    name_km: "TODO"
+    covers: "TODO: e.g. 50% or 100% of tuition"
+    eligibility:
+      - "TODO: e.g. grade 12 exam result A or B"
+    documents:
+      - "TODO: e.g. copy of grade 12 certificate"
+    how_to_apply: "TODO: e.g. online form on the website, or at the admissions office"
+    deadline: "TODO: YYYY-MM-DD"
+    results_announced: "TODO: e.g. by email within 4 weeks"

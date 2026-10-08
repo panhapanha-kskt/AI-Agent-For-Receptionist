@@ -1,0 +1,19 @@
+# TODO: replace with real facilities. Copy the block per facility.
+# NEVER put passwords, door codes or other secrets in this file.
+facilities:
+  - name: "TODO: e.g. Computer lab"
+    location: "TODO: e.g. Building A, 2nd floor"
+    opening_hours: "TODO"
+    who_can_use: "TODO: e.g. enrolled students with ID card"
+    rules: "TODO"
+  - name: "TODO: e.g. Library"
+    location: "TODO"
+    opening_hours: "TODO"
+    who_can_use: "TODO"
+    rules: "TODO: e.g. borrow up to 3 books for 2 weeks"
+
+wifi:
+  how_to_connect: "TODO: e.g. log in with your student account (no shared password)"
+  help: "TODO: e.g. IT help desk, room ..."
+
+accessibility: "TODO: e.g. lift, ramps, accessible toilets"

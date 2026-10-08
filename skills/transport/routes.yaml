@@ -1,0 +1,14 @@
+# TODO: replace with real routes, or delete the bus part if there is no school bus.
+school_bus:
+  available: "TODO: yes / no"
+  fee: "TODO: e.g. 600 USD per year"
+  how_to_register: "TODO"
+  routes:
+    - name: "TODO: e.g. Route 1 - Toul Kork"
+      stops:
+        - { stop: "TODO", morning_pickup: "TODO", afternoon_dropoff: "TODO" }
+
+getting_here:
+  public_bus: "TODO: e.g. city bus line number and nearest stop"
+  tuk_tuk: "TODO: e.g. ask for ... landmark"
+  parking: "TODO: motorbike and car parking, price if any"

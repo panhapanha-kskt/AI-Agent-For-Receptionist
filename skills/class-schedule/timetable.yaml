@@ -1,0 +1,22 @@
+# TODO: replace with real times. Use 24-hour format, e.g. "07:30".
+sessions:
+  morning:   { start: "TODO", end: "TODO", days: "TODO: e.g. Monday-Friday" }
+  afternoon: { start: "TODO", end: "TODO", days: "TODO" }
+  evening:   { start: "TODO", end: "TODO", days: "TODO" }
+  weekend:   { start: "TODO", end: "TODO", days: "TODO: e.g. Saturday-Sunday" }
+
+# Optional: weekly timetable per program and year. Copy the block per program.
+timetables:
+  - program: "TODO: program name"
+    year: 1
+    session: "TODO: morning / afternoon / evening"
+    monday:    ["TODO: subject"]
+    tuesday:   ["TODO"]
+    wednesday: ["TODO"]
+    thursday:  ["TODO"]
+    friday:    ["TODO"]
+
+exams:
+  midterm: "TODO: e.g. week 8 of each semester"
+  final:   "TODO"
+  exam_rules: "TODO: e.g. bring student ID card, arrive 15 minutes early"
