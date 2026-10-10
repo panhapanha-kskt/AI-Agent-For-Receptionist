@@ -5,12 +5,12 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "receptionist"
 version = "0.1.0"
-description = "AI voice receptionist for an academy school (English + Khmer)"
+description = "AI voice receptionist for an academy school (English + Khmer), powered by Gemini"
 requires-python = ">=3.11"
 dependencies = [
     "fastapi>=0.115",
     "uvicorn[standard]>=0.30",
-    "anthropic>=0.70",
+    "google-genai>=2.29",
     "pydantic-settings>=2.4",
     "sqlalchemy>=2.0",
     "python-multipart>=0.0.9",

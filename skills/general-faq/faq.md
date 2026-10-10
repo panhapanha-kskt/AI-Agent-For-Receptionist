@@ -12,9 +12,6 @@ TODO
 ## Where can I find the website and social media? / តើមានគេហទំព័រ ឬហ្វេសប៊ុកទេ?
 TODO: website address, Facebook page, Telegram channel
 
-## Can I visit the campus? / តើខ្ញុំអាចមកមើលសាលាបានទេ?
-TODO: e.g. yes, weekdays 8:00-16:00, book a tour through the admissions office
-
 ## I lost something on campus. / ខ្ញុំបាត់របស់នៅក្នុងសាលា
 TODO: e.g. ask at the front office lost-and-found desk
 

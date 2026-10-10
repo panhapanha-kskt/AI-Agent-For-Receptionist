@@ -1,5 +1,6 @@
 """App factory. Run with: uvicorn receptionist.main:app --reload"""
 
+import asyncio
 import logging
 from contextlib import asynccontextmanager
 
@@ -28,10 +29,36 @@ logger = logging.getLogger("receptionist")
 def create_app(settings: Settings | None = None, agent_client=None) -> FastAPI:
     settings = settings or get_settings()
 
+    async def _warm_up_speech(app: FastAPI) -> None:
+        # Load Whisper in the background so startup isn't blocked and the first voice
+        # message doesn't pay the load (or first-time download) cost.
+        try:
+            await asyncio.to_thread(app.state.stt.warm_up)
+            if settings.stt_enabled:
+                logger.info("speech-to-text models loaded")
+        except Exception:
+            logger.exception("could not pre-load speech-to-text models")
+
+    async def _warm_up_router(app: FastAPI) -> None:
+        # Embed the skills once at startup so the first caller doesn't wait for it.
+        router = app.state.agent.router
+        if router is None:
+            return
+        try:
+            await router.ensure_index()
+        except Exception:
+            logger.exception("could not build the skill router index")
+
     @asynccontextmanager
     async def lifespan(app: FastAPI):
         init_db()
+        tasks = [
+            asyncio.create_task(_warm_up_speech(app)),
+            asyncio.create_task(_warm_up_router(app)),
+        ]
         yield
+        for task in tasks:
+            task.cancel()
 
     app = FastAPI(
         title="AI Receptionist",

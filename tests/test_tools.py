@@ -18,12 +18,19 @@ def ctx(db):
     return ToolContext(db=db, skills=reg, session_id=str(uuid.uuid4()))
 
 
-def test_definitions_are_strict_and_closed(ctx):
+def test_definitions_are_closed(ctx):
     for tool in tool_definitions(ctx.skills):
-        assert tool["strict"] is True
-        schema = tool["input_schema"]
+        schema = tool["parameters"]
         assert schema["additionalProperties"] is False
         assert set(schema["required"]) == set(schema["properties"])
+        # Gemini rejects empty-string enum values.
+        for prop in schema["properties"].values():
+            assert "" not in prop.get("enum", [])
+
+
+def test_none_means_no_skill(ctx):
+    out, err = run_tool(ctx, "search_knowledge", {"query": "anything", "skill": "none"})
+    assert not err
 
 
 def test_load_skill_and_read_file(ctx):

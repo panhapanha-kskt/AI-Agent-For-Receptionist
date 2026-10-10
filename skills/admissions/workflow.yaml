@@ -1,0 +1,13 @@
+# Step-by-step processes for this skill. The agent follows the steps one turn at a time.
+# EXAMPLE - adjust the steps to how your admissions office really works.
+workflows:
+  book_campus_tour:
+    when: The caller wants to visit the school or book a campus tour.
+    steps:
+      - Tell them tours run on weekdays, 8:00-11:00 and 14:00-16:00.
+      - Ask which day and time suits them.
+      - Ask for their name and a phone number or email.
+      - Ask the child's age or the grade they are interested in (optional).
+      - Read the details back and ask them to confirm.
+      - When confirmed, call take_message for "admissions" with the requested day/time and grade.
+      - Tell them the admissions office will call to confirm the tour.

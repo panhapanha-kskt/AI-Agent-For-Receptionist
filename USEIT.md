@@ -30,7 +30,7 @@ Caller speaks or types
 [Speech-to-text]  faster-whisper (English / Khmer)        (voice only)
    │
    ▼
-[Claude agent]  picks a skill ─► load_skill ─► read_skill_file (e.g. fees.yaml)
+[Gemini agent]  picks a skill ─► load_skill ─► read_skill_file (e.g. fees.yaml)
    │            not in a skill? ─► search_knowledge (staff-approved answers)
    │            still unknown?  ─► log_unanswered + offer take_message
    ▼
@@ -67,7 +67,7 @@ Open `.env` and set at least:
 
 | Setting | What to put |
 |---|---|
-| `ANTHROPIC_API_KEY` | Your key from https://console.anthropic.com |
+| `GEMINI_API_KEY` | Your key from https://aistudio.google.com/apikey (it starts with `AIza`) |
 | `ADMIN_API_KEY` | The random string you just generated (staff need it to sign in) |
 | `SCHOOL_NAME` | Your academy's real name |
 
@@ -77,7 +77,7 @@ Open `.env` and set at least:
 ```powershell
 pytest
 ```
-All tests should pass. They use a fake Claude, so they cost nothing.
+All tests should pass. They use a fake Gemini, so they cost nothing.
 
 ---
 
@@ -213,10 +213,10 @@ Put an HTTPS reverse proxy (Caddy or Nginx) in front, and set `ENVIRONMENT=produ
 - Every week, look at the most-asked questions. Three or more on the same new topic means it's
   time to create a new skill.
 
-### 5.3 Tune how Claude behaves
+### 5.3 Tune how Gemini behaves
 | Setting / file | Effect |
 |---|---|
-| `CLAUDE_EFFORT=low` in `.env` | Fast and cheap (default). Try `medium` if answers seem shallow or skills are skipped. |
+| `GEMINI_MODEL` in `.env` | `gemini-3.8-flash` (default) balances speed and quality. A `-lite` model is cheaper; test it with section 6.2 before switching. |
 | `src/receptionist/agent/prompts.py` | Tone, reply length, safety rules. Change one thing at a time and re-test (section 6). |
 | `MAX_HISTORY_TURNS`, `AGENT_MAX_TOOL_ROUNDS` | Memory length and the tool-call limit per answer. |
 
@@ -247,7 +247,7 @@ knowledge or other people's data.
 
 ### 6.1 Automatic tests (run after every change)
 ```powershell
-pytest                                  # behaviour (fake Claude; free)
+pytest                                  # behaviour (fake Gemini; free)
 ruff check src tests                    # code style and common bugs
 bandit -c pyproject.toml -r src         # security static analysis
 python -m pip_audit                     # known-vulnerable packages
@@ -255,7 +255,7 @@ pre-commit install                      # runs these on every git commit
 ```
 All must pass before you deploy.
 
-### 6.2 Answer-quality test (real Claude)
+### 6.2 Answer-quality test (real Gemini)
 Make a list of 30-50 real questions with the **correct** answer next to each, in both languages.
 For example:
 
@@ -299,8 +299,8 @@ If any row fails, treat it as a bug and add a test for it in `tests/` so it can'
 - **Audit log** (`audit_events` table): every tool the agent used and every admin action, with
   personal data masked.
 - **Review queue size**: if it keeps growing, your skills are missing something.
-- **Anthropic console**: daily cost and errors. Set a spending limit there.
-- **Server log**: look for `Claude API error`, `Skill not loaded`, `hit the tool-round limit`.
+- **Google AI Studio / Cloud console**: daily cost, quota and errors. Set a budget alert there.
+- **Server log**: look for `Gemini API error`, `Skill not loaded`, `hit the tool-round limit`.
 
 ---
 
@@ -318,7 +318,7 @@ If any row fails, treat it as a bug and add a test for it in `tests/` so it can'
 - [ ] `CORS_ORIGINS` set to your real domain only
 - [ ] The security tests (6.4) all pass
 - [ ] `pytest`, `bandit` and `pip_audit` are clean
-- [ ] Spending limit set in the Anthropic console
+- [ ] Budget alert / quota limit set in Google AI Studio or Google Cloud
 - [ ] TTS licence checked (MMS is non-commercial only)
 - [ ] `TTS_MMS_REVISION` pinned to a commit hash, if you use MMS
 
@@ -338,7 +338,7 @@ If any row fails, treat it as a bug and add a test for it in `tests/` so it can'
 
 | Problem | Cause / fix |
 |---|---|
-| Chat says "Assistant is busy, please try again" | Missing or wrong `ANTHROPIC_API_KEY`, no credit, or the API is down. Check the server log. |
+| Chat says "Assistant is busy, please try again" | Missing or wrong `GEMINI_API_KEY` (the log shows `Gemini API error 401`), quota used up (`429`), or the API is down. Check the server log. |
 | Voice says "Voice input is disabled" | Set `STT_ENABLED=true` and `pip install -e ".[voice]"` |
 | First voice message is very slow | The model is downloading or loading. Later messages are faster. |
 | Khmer transcripts are wrong | Set `STT_MODEL_KM` to a Khmer model, choose ខ្មែរ in the dropdown, and test other models |

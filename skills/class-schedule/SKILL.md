@@ -1,6 +1,6 @@
 ---
 name: class-schedule
-description: Class times and sessions (morning, afternoon, evening, weekend), weekly timetable per program or year, exam weeks and exam times. ម៉ោងសិក្សា កាលវិភាគ វេនព្រឹក វេនរសៀល វេនល្ងាច ប្រឡង.
+description: Class times, what time classes start and end, sessions (morning, afternoon, evening, weekend), weekly timetable per program or year, exam weeks and exam times. ម៉ោងសិក្សា កាលវិភាគ វេនព្រឹក វេនរសៀល វេនល្ងាច ប្រឡង.
 ---
 
 # Class schedule

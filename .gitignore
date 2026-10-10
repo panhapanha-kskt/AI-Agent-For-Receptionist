@@ -25,3 +25,6 @@ uploads/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Eval reports
+reports/

@@ -49,6 +49,14 @@ class WhisperSTT:
                 )
             return self._models[name]
 
+    def warm_up(self) -> None:
+        """Load the speech models now, so the first voice message isn't slowed by loading
+        (and, the very first time, downloading) them."""
+        if not self.settings.stt_enabled:
+            return
+        for name in filter(None, [self.settings.stt_model_en, self.settings.stt_model_km]):
+            self._model(name)
+
     def _run(self, model_name: str, audio: bytes, language: str | None):
         model = self._model(model_name)
         # transcribe() decodes the audio and detects the language up front; the

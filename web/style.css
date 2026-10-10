@@ -39,3 +39,11 @@ button:disabled { opacity: .5; cursor: default; }
 .card .meta { color: var(--muted); font-size: 0.85rem; }
 .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 .hidden { display: none; }
+
+.feedback { display: flex; gap: 6px; margin-top: 6px; font-size: 0.85rem; color: var(--muted); }
+.feedback button { padding: 2px 8px; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; }
+.stats .card { margin: 0; }
+.stats strong { display: block; font-size: 1.3rem; }
+.tag { display: inline-block; padding: 0 6px; border-radius: 6px; border: 1px solid var(--border); font-size: 0.8rem; }
+.prev { border-left: 3px solid var(--danger); padding-left: 8px; color: var(--muted); }

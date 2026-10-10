@@ -25,8 +25,13 @@
         <button type="button" id="logout" class="secondary">Sign out</button>
       </div>
 
-      <h2>Questions the agent couldn't answer</h2>
-      <p class="note">Write the answer and choose a skill. Once approved, the receptionist uses it straight away.</p>
+      <h2>Speed (last 24 hours)</h2>
+      <div id="metrics" class="stats"></div>
+
+      <h2>Questions to review</h2>
+      <p class="note">Questions the receptionist couldn't answer, and answers callers rated 👎.
+        Use "Draft with AI" for a first version from the skills, edit it, choose a skill and approve.
+        Once approved, the receptionist uses it straight away.</p>
       <div id="questions"></div>
 
       <h2>Messages for staff</h2>
@@ -34,6 +39,14 @@
 
       <h2>Approved knowledge</h2>
       <div id="knowledge"></div>
+
+      <h2>Caller feedback 👎</h2>
+      <div id="feedback"></div>
+
+      <h2>Learned routing examples</h2>
+      <p class="note">Questions where the receptionist found the right skill on its own. They teach
+        it to pick that skill straight away next time (faster answers). Delete any that look wrong.</p>
+      <div id="examples"></div>
 
       <h2>Skills</h2>
       <div id="skills"></div>

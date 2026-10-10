@@ -1,6 +1,6 @@
 ---
 name: campus-and-contact
-description: School address, directions, map, front-office opening hours, phone numbers and which office or staff member to contact for what. អាសយដ្ឋាន ទីតាំង លេខទូរស័ព្ទ ការិយាល័យ.
+description: Where the school is located - address, location, directions, map; front-office opening hours, phone numbers, and which office or staff member to contact for what. អាសយដ្ឋាន ទីតាំង លេខទូរស័ព្ទ ការិយាល័យ.
 ---
 
 # Campus and contact

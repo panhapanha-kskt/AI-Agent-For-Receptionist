@@ -19,6 +19,8 @@ from receptionist.messages.models import OFFICES
 from receptionist.skills.loader import SkillError, SkillRegistry
 
 LANGS = ["en", "km"]
+# Enum value meaning "no particular skill" (Gemini rejects empty-string enum values).
+NO_SKILL = "none"
 
 
 class ToolInputError(ValueError):
@@ -33,15 +35,14 @@ class ToolContext:
 
 
 def tool_definitions(skills: SkillRegistry) -> list[dict[str, Any]]:
-    """JSON schemas sent to Claude. Skill names are an enum, so only real skills are valid."""
-    names = skills.names() or ["none"]
+    """Provider-neutral tool schemas. Skill names are an enum, so only real skills are valid."""
+    names = skills.names() or ["no-skills-installed"]
 
     def tool(name: str, description: str, properties: dict) -> dict:
         return {
             "name": name,
             "description": description,
-            "strict": True,
-            "input_schema": {
+            "parameters": {
                 "type": "object",
                 "properties": properties,
                 "required": list(properties),
@@ -72,8 +73,8 @@ def tool_definitions(skills: SkillRegistry) -> list[dict[str, Any]]:
                 "query": {"type": "string", "description": "The caller's question."},
                 "skill": {
                     "type": "string",
-                    "enum": ["", *names],
-                    "description": "Limit to one skill, or empty string for all.",
+                    "enum": [NO_SKILL, *names],
+                    "description": 'Limit to one skill, or "none" to search all.',
                 },
             },
         ),
@@ -96,8 +97,8 @@ def tool_definitions(skills: SkillRegistry) -> list[dict[str, Any]]:
                 "lang": {"type": "string", "enum": LANGS},
                 "suggested_skill": {
                     "type": "string",
-                    "enum": ["", *names],
-                    "description": "Best matching skill, or empty string if none fits.",
+                    "enum": [NO_SKILL, *names],
+                    "description": 'Best matching skill, or "none" if none fits.',
                 },
             },
         ),
@@ -123,6 +124,11 @@ def _choice(data: dict, key: str, allowed: list[str] | tuple[str, ...]) -> str:
     return value
 
 
+def _optional_skill(ctx: ToolContext, data: dict, key: str) -> str | None:
+    value = _choice(data, key, ["", NO_SKILL, *ctx.skills.names()])
+    return None if value in ("", NO_SKILL) else value
+
+
 def _load_skill(ctx: ToolContext, data: dict) -> str:
     return ctx.skills.load(_choice(data, "name", ctx.skills.names()))
 
@@ -134,7 +140,7 @@ def _read_skill_file(ctx: ToolContext, data: dict) -> str:
 
 def _search_knowledge(ctx: ToolContext, data: dict) -> str:
     query = _str(data, "query", 500)
-    skill = _choice(data, "skill", ["", *ctx.skills.names()]) or None
+    skill = _optional_skill(ctx, data, "skill")
     hits = knowledge.search(ctx.db, query, skill=skill)
     if not hits:
         return "No approved answer found."
@@ -161,7 +167,7 @@ def _log_unanswered(ctx: ToolContext, data: dict) -> str:
         ctx.db,
         question=_str(data, "question", 1000),
         lang=_choice(data, "lang", LANGS),
-        suggested_skill=_choice(data, "suggested_skill", ["", *ctx.skills.names()]) or None,
+        suggested_skill=_optional_skill(ctx, data, "suggested_skill"),
     )
     return f"Logged for staff review (#{item.id})."
 

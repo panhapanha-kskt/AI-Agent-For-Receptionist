@@ -14,6 +14,9 @@ class QuestionOut(ORM):
     suggested_skill: str | None
     times_asked: int
     last_asked_at: datetime
+    source: str = "agent"  # "agent" (couldn't answer) | "feedback" (caller rated 👎)
+    previous_answer: str | None = None
+    draft_answer: str | None = None
 
 
 class ApproveIn(BaseModel):
@@ -49,3 +52,26 @@ class MessageOut(ORM):
 class SkillsOut(BaseModel):
     skills: list[str]
     errors: list[str]
+
+
+class FeedbackOut(ORM):
+    id: int
+    created_at: datetime
+    turn_id: int
+    rating: str
+    skill: str | None
+    question: str
+    answer: str
+    comment: str | None
+
+
+class RoutingExampleOut(ORM):
+    id: int
+    created_at: datetime
+    skill: str
+    text: str
+
+
+class ExportOut(BaseModel):
+    skill: str
+    file: str

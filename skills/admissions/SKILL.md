@@ -1,6 +1,6 @@
 ---
 name: admissions
-description: Enrolling a new student - who can apply, required documents, application steps, entrance test, deadlines and school tours.
+description: Enrolling or registering a new student - who can apply, required documents, application steps, placement or entrance test, deadlines and booking a campus tour. ការចុះឈ្មោះចូលរៀន ឯកសារ ពាក្យសុំ ប្រឡងចូល ទស្សនកិច្ចសាលា.
 ---
 
 # Admissions

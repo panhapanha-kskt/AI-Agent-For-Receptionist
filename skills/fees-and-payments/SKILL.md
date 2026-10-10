@@ -1,6 +1,6 @@
 ---
 name: fees-and-payments
-description: Tuition fees per grade, registration fee, payment schedule, payment methods and sibling discounts.
+description: Tuition fees and prices per grade, registration fee, how much it costs, payment schedule, payment methods (bank, ABA, KHQR, cash) and sibling discounts. ថ្លៃសិក្សា តម្លៃ ការបង់ប្រាក់ ថ្លៃចុះឈ្មោះ បញ្ចុះតម្លៃ.
 ---
 
 # Fees and payments

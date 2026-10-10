@@ -62,12 +62,21 @@ function renderQuestions(items) {
     const question = el("textarea", { "aria-label": "Question" });
     question.value = q.question;
     const answer = el("textarea", { placeholder: q.lang === "km" ? "ចម្លើយ..." : "Answer...", "aria-label": "Answer" });
+    if (q.draft_answer && !q.draft_answer.startsWith("NOT FOUND")) answer.value = q.draft_answer;
     const skill = skillSelect(q.suggested_skill);
+    const source = q.source === "feedback" ? "👎 rated by a caller" : "couldn't answer";
     box.appendChild(el("div", { class: "card" },
-      el("div", { class: "meta", text: `#${q.id} · ${q.lang.toUpperCase()} · asked ${q.times_asked}×` }),
-      question, answer,
+      el("div", { class: "meta", text: `#${q.id} · ${q.lang.toUpperCase()} · asked ${q.times_asked}× · ${source}` }),
+      question,
+      q.previous_answer ? el("p", { class: "prev", text: `Answer the caller didn't like: ${q.previous_answer}` }) : null,
+      q.draft_answer && q.draft_answer.startsWith("NOT FOUND")
+        ? el("p", { class: "note", text: "AI draft: not found in the skills. Please write the answer (and consider adding it to a skill)." })
+        : null,
+      answer,
       el("div", { class: "row" },
         skill,
+        el("button", { type: "button", class: "secondary", text: "Draft with AI", onclick: () => action(() =>
+          api(`/questions/${q.id}/draft`, { method: "POST" }), "Draft ready. Check and edit it before approving.") }),
         el("button", { type: "button", text: "Approve", onclick: () => action(() => {
           if (!answer.value.trim()) throw new Error("Write an answer first.");
           return api(`/questions/${q.id}/approve`, { method: "POST",
@@ -109,9 +118,63 @@ function renderKnowledge(items) {
       el("div", { class: "row" },
         el("button", { type: "button", text: "Save new version", onclick: () => action(() =>
           api(`/knowledge/${k.id}`, { method: "PUT", body: JSON.stringify({ answer: answer.value.trim() }) }), "Saved.") }),
+        el("button", { type: "button", class: "secondary", text: "Move to skill faq.md",
+          title: "Write this Q&A into the skill's faq.md (permanent; remember to commit it to git)",
+          onclick: () => action(async () => {
+            const r = await api(`/knowledge/${k.id}/export`, { method: "POST" });
+            return r;
+          }, "Moved into the skill's faq.md. Commit the skills folder to git.") }),
         el("button", { type: "button", class: "secondary", text: "Remove", onclick: () => action(() =>
           api(`/knowledge/${k.id}`, { method: "DELETE" }), "Removed.") }),
       ),
+    ));
+  });
+}
+
+function stat(label, value) {
+  return el("div", { class: "card" }, el("strong", { text: value == null ? "–" : String(value) }), el("span", { class: "meta", text: label }));
+}
+
+function renderMetrics(m) {
+  const box = $("metrics");
+  const secs = (ms) => (ms == null ? null : (ms / 1000).toFixed(1) + " s");
+  const fb = m.feedback || {};
+  box.replaceChildren(
+    stat("answers", m.turns),
+    stat("first words (median)", secs(m.ttft_ms.p50)),
+    stat("full answer (median)", secs(m.total_ms.p50)),
+    stat("full answer (slowest 5%)", secs(m.total_ms.p95)),
+    stat("model calls per answer", m.avg_llm_calls),
+    stat("answered from routed skill", (m.by_path.routed || 0) + (m.by_path.knowledge || 0)),
+    stat("errors", m.errors),
+    stat("👍 / 👎", `${fb.up || 0} / ${fb.down || 0}`),
+  );
+}
+
+function renderFeedback(items) {
+  const box = $("feedback");
+  box.replaceChildren();
+  if (!items.length) { box.appendChild(el("p", { class: "note", text: "No 👎 ratings. 🎉" })); return; }
+  items.slice(0, 20).forEach((f) => {
+    box.appendChild(el("div", { class: "card" },
+      el("div", { class: "meta", text: `${new Date(f.created_at).toLocaleString()} · ${f.skill || "no skill"}` }),
+      el("strong", { text: f.question }),
+      el("p", { class: "prev", text: f.answer }),
+      f.comment ? el("p", { text: `Comment: ${f.comment}` }) : null,
+    ));
+  });
+}
+
+function renderExamples(items) {
+  const box = $("examples");
+  box.replaceChildren();
+  if (!items.length) { box.appendChild(el("p", { class: "note", text: "None learned yet." })); return; }
+  items.forEach((e) => {
+    box.appendChild(el("div", { class: "row card" },
+      el("span", { class: "tag", text: e.skill }),
+      el("span", { text: e.text }),
+      el("button", { type: "button", class: "secondary", text: "Delete", onclick: () => action(() =>
+        api(`/routing-examples/${e.id}`, { method: "DELETE" }), "Deleted.") }),
     ));
   });
 }
@@ -124,13 +187,17 @@ function renderSkills(data) {
 }
 
 async function refresh() {
-  const [skills, questions, messages, knowledge] = await Promise.all([
+  const [skills, questions, messages, knowledge, metrics, feedback, examples] = await Promise.all([
     api("/skills"), api("/questions"), api("/messages"), api("/knowledge"),
+    api("/metrics"), api("/feedback?rating=down"), api("/routing-examples"),
   ]);
   renderSkills(skills);
+  renderMetrics(metrics);
   renderQuestions(questions);
   renderMessages(messages);
   renderKnowledge(knowledge);
+  renderFeedback(feedback);
+  renderExamples(examples);
 }
 
 function showPanel(show) {

@@ -1,10 +1,10 @@
 # AI Voice Receptionist (Academy School, English + Khmer)
 
 An AI receptionist that answers voice and text messages about the school, in English and Khmer.
-It is built on Claude (Anthropic API) and FastAPI, with self-hosted speech-to-text (faster-whisper).
+It is built on Google Gemini (google-genai SDK) and FastAPI, with self-hosted speech-to-text (faster-whisper).
 
 ```
-Voice / text ─► validate ─► STT (faster-whisper) ─► Claude agent + tools ─► TTS ─► reply
+Voice / text ─► validate ─► STT (faster-whisper) ─► Gemini agent + tools ─► TTS ─► reply
                                                         │
                        skills/ (SKILL.md)  ◄── reads ───┤
                        approved knowledge  ◄── reads ───┤
@@ -20,7 +20,7 @@ Voice / text ─► validate ─► STT (faster-whisper) ─► Claude agent + t
 python -m venv .venv
 .venv\Scripts\Activate.ps1
 pip install -e ".[dev]"          # add ,voice for speech-to-text
-copy .env.example .env           # then fill in ANTHROPIC_API_KEY and ADMIN_API_KEY
+copy .env.example .env           # then fill in GEMINI_API_KEY and ADMIN_API_KEY
 uvicorn receptionist.main:app --reload
 ```
 
@@ -78,7 +78,7 @@ knowledge poisoning through prompt injection.
 src/receptionist/
   main.py         app factory, middleware, routes
   config.py       settings from .env
-  agent/          Claude client + tool loop, prompts, tools, guardrails
+  agent/          Gemini client + tool loop, prompts, tools, guardrails
   skills/         SKILL.md registry (progressive disclosure, no path access)
   knowledge/      approved Q&A entries (versioned) + search (works for Khmer)
   learning/       review queue for unanswered questions
@@ -89,7 +89,7 @@ src/receptionist/
   security/       auth, rate limit, security headers, audit log, PII redaction
 skills/           skill content (editable by staff)
 web/              chat page + admin page (no inline JS; strict CSP)
-tests/            pytest suite (Claude is faked; no API key needed)
+tests/            pytest suite (Gemini is faked; no API key needed)
 ```
 
 ## Security measures

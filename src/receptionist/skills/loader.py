@@ -34,6 +34,7 @@ class Skill:
     description: str
     body: str
     files: dict[str, Path] = field(default_factory=dict)
+    directory: Path | None = None
 
 
 def parse_skill_md(text: str) -> tuple[dict, str]:
@@ -70,7 +71,9 @@ def _load_skill_dir(directory: Path) -> Skill:
             continue
         files[path.name] = path.resolve()
 
-    return Skill(name=name, description=description, body=body, files=files)
+    return Skill(
+        name=name, description=description, body=body, files=files, directory=directory.resolve()
+    )
 
 
 class SkillRegistry:
@@ -78,6 +81,8 @@ class SkillRegistry:
         self.skills_dir = skills_dir
         self._skills: dict[str, Skill] = {}
         self.errors: list[str] = []
+        # Bumped on every reload, so caches built from skills (e.g. the router) know to rebuild.
+        self.version = 0
 
     def reload(self) -> None:
         skills: dict[str, Skill] = {}
@@ -100,6 +105,7 @@ class SkillRegistry:
                 skills[skill.name] = skill
         self._skills = skills
         self.errors = errors
+        self.version += 1
 
     def names(self) -> list[str]:
         return sorted(self._skills)
@@ -128,3 +134,46 @@ class SkillRegistry:
         if path is None:
             raise SkillError(f"Skill {name!r} has no file {filename!r}")
         return path.read_text(encoding="utf-8")
+
+    def bundle(self, name: str, max_bytes: int = 8000) -> str:
+        """SKILL.md plus as many reference files as fit in `max_bytes`, in one string.
+
+        Used by the router to give the model a skill's content up front (1 call instead of
+        3). Files that don't fit are listed so the model can still fetch them with a tool.
+        """
+        skill = self._skills.get(name)
+        if skill is None:
+            raise SkillError(f"Unknown skill {name!r}")
+        out = [f"# Skill: {skill.name}\n{skill.body}"]
+        used = len(out[0].encode("utf-8"))
+        skipped = []
+        for filename, path in skill.files.items():
+            content = path.read_text(encoding="utf-8")
+            block = f"\n\n## File: {filename}\n{content.strip()}"
+            size = len(block.encode("utf-8"))
+            if used + size > max_bytes:
+                skipped.append(filename)
+                continue
+            out.append(block)
+            used += size
+        if skipped:
+            out.append("\n\nMore reference files (use read_skill_file): " + ", ".join(skipped))
+        return "".join(out)
+
+    def example_questions(self, name: str, limit: int = 40) -> list[str]:
+        """Questions written as '## ...' headings in a skill's .md files (e.g. faq.md).
+
+        They show the router how callers actually ask about this skill. Headings still
+        marked TODO are skipped.
+        """
+        skill = self._skills.get(name)
+        if skill is None:
+            return []
+        questions = []
+        for filename, path in skill.files.items():
+            if not filename.endswith(".md"):
+                continue
+            for line in path.read_text(encoding="utf-8").splitlines():
+                if line.startswith("## ") and "TODO" not in line:
+                    questions.append(line[3:].strip())
+        return questions[:limit]
