@@ -5,7 +5,7 @@
 > "How to continue", lists the exact next steps.
 > Nothing has been committed to git. You commit it yourself (see section 7).
 
-The plan this work follows is `C:\Users\ASUS\.claude\plans\i-wanna-build-an-goofy-noodle.md`.
+The full plan this work follows is in **[PLAN.md](PLAN.md)**, in this same folder.
 `need-improve.md` also has a short progress table.
 
 ---
@@ -271,4 +271,4 @@ into chat earlier, so please **rotate both** if you haven't already.
    - the free-tier note
 6. Run pytest, ruff and bandit again, then **commit and push by hand** (section 7).
 
-To resume with Claude, say: *"Continue from progress/PROGRESS.md, step 2."*
+To resume with Claude, say: *"Read progress/PLAN.md and progress/PROGRESS.md, then continue from step 2."*
